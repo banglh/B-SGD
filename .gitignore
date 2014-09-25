@@ -1,4 +1,4 @@
-.bmp
-.pyc
-.txt
-
+﻿
+*.txt
+*.pyc
+*.bmp
