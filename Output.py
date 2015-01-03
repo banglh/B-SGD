@@ -18,7 +18,7 @@ def printToFile(methodName, ErrorType, K, trainErr, testErr, Info):
     f.close()
 
 # Ouput the result of a run of an experiment to file
-def outputRunResults(fileName, trainErr, valErr, testErr, Info):
+def outputRunResults(fileName, trainErr, valErr, testErr, Info, moreResults):
     # open file
     f = open(fileName, 'w')
     
@@ -33,6 +33,8 @@ def outputRunResults(fileName, trainErr, valErr, testErr, Info):
         f.write("%f\t%f\n" % (trainErr[i + 1], valErr[i + 1]))
     
     f.write("\nTest Error: %f" % (testErr))
+    
+    f.write("%s\n" % (moreResults))
     
     print "Results have written to file %s" % (fileName)
     f.close()

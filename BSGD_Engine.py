@@ -3,7 +3,8 @@ from Error import RMSE
 import numpy as np
 import time
 
-def trainParamsExp(Rtrain, Rval, Rtest, P0, Q0, muy, alpha, rmin, rmax, version):
+def trainParamsExp(Rtrain, Rval, Rtest, P0, Q0, muy, alpha, lamda, rmin, rmax, version):
+    maxIteration = 200
     P = P0
     Q = Q0
     Plast = 0.0
@@ -35,7 +36,7 @@ def trainParamsExp(Rtrain, Rval, Rtest, P0, Q0, muy, alpha, rmin, rmax, version)
     exp_alpha_rmin = np.exp(alpha * rmin)
     
     iterNum = 0
-    while (iterNum < 200 and not(stopCriterion(val_Err[-1], val_Err[-2]))):
+    while (iterNum < maxIteration and not(stopCriterion(val_Err[-1], val_Err[-2]))):
         iterNum += 1
         start = time.time()
         
@@ -71,8 +72,8 @@ def trainParamsExp(Rtrain, Rval, Rtest, P0, Q0, muy, alpha, rmin, rmax, version)
                     PHu = P[user,:] * Hu
                     
                 # update Pu, Qi
-                P[u,:] = P[u,:] + muy * (Eui * Q[:,i] - alpha * QHi)
-                Q[:,i] = Q[:,i] + muy * (Eui * P[u,:] - alpha * PHu)
+                P[u,:] = P[u,:] + muy * (Eui * Q[:,i] - lamda * alpha * QHi)
+                Q[:,i] = Q[:,i] + muy * (Eui * P[u,:] - lamda * alpha * PHu)
                 
             else: #(version 1)
 #                 H = np.exp(alpha * (estimated_Rui - rmax)) - np.exp(alpha * (rmin - estimated_Rui))
@@ -80,7 +81,7 @@ def trainParamsExp(Rtrain, Rval, Rtest, P0, Q0, muy, alpha, rmin, rmax, version)
                 H = (exp_alpha_rui / exp_alpha_rmax) - (exp_alpha_rmin / exp_alpha_rui)
                 
                 # update Pu, Qi
-                tmp = muy * (Eui - alpha * H)
+                tmp = muy * (Eui - lamda * alpha * H)
                 P[u,:] = P[u,:] + tmp * Q[:,i]
                 Q[:,i] = Q[:,i] + tmp * P[u,:]
         
